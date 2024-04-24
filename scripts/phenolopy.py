@@ -113,7 +113,7 @@ def calc_vege_index(ds, index='ndvi', drop=True):
     
     Parameters
     ----------
-    ds: xarray Dataset
+    ds: xarray Datasetnp.datetime64
         A two-dimensional or multi-dimensional array containing the spectral 
         bands required to calculate the index.
     index: str
@@ -293,7 +293,7 @@ def remove_outliers(ds, method='median', user_factor=2, z_pval=0.05):
         # shift values left and right one time index and combine, get mean and max for each window
         lefts, rights = ds.shift(time=1).where(outlier_mask), ds.shift(time=-1).where(outlier_mask)
         nbr_means = (lefts + rights) / 2
-        nbr_maxs = xr.ufuncs.fmax(lefts, rights)
+        nbr_maxs = np.fmax(lefts, rights)
 
         # keep nan only if middle val < mean of neighbours - cutoff or middle val > max val + cutoffs
         outlier_mask = xr.where((ds.where(outlier_mask) < (nbr_means - cutoffs)) | 
@@ -368,8 +368,11 @@ def correct_last_datetime(ds, interval):
         print('> Changing day of last datetime value in dataset to the 31st.')
 
         # convert to 31st
-        new_dt = '{0}-{1}-{2}'.format(y, m, 31)
-        new_dt = np.datetime64(new_dt, dtype='datetime64[ns]')
+        # new_dt = '{0}-{1}-{2}'.format(y, m, 31)
+        d = datetime(y, m, 31)
+        new_dt = d.strftime("%Y-%m-%d")
+        new_dt = np.datetime64(new_dt)
+        # new_dt = np.datetime64(new_dt, dtype='datetime64[ns]')
 
         # update value in dataset
         ds['time'] = ds['time'].where(ds['time'] != old_dt, new_dt)     
@@ -2505,7 +2508,7 @@ def calc_phenometrics(da, peak_metric='pos', base_metric='bse', method='first_of
     ]
   
     # combine data arrays into one dataset
-    ds_phenos = xr.merge(da_list)
+    ds_phenos = xr.merge(da_list, compat='override')
     
     # set original all nan pixels back to nan
     ds_phenos = ds_phenos.where(~da_all_nan_mask)
