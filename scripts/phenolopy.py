@@ -113,7 +113,7 @@ def calc_vege_index(ds, index='ndvi', drop=True):
     
     Parameters
     ----------
-    ds: xarray Datasetnp.datetime64
+    ds: xarray Dataset
         A two-dimensional or multi-dimensional array containing the spectral 
         bands required to calculate the index.
     index: str
