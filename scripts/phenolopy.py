@@ -36,7 +36,7 @@ from scipy.stats import zscore
 from scipy.signal import savgol_filter, find_peaks
 from scipy.ndimage import gaussian_filter
 from statsmodels.tsa.seasonal import STL as stl
-from datacube.utils.geometry import assign_crs
+# from datacube.utils.geometry import assign_crs
 
 
 def conform_dea_band_names(ds):
